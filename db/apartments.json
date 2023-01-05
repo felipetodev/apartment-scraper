@@ -1,0 +1,92 @@
+[
+  {
+    "title": "Las Condes, Los Militares /La Gloria / Metro",
+    "price": "$ 1.100.000",
+    "newPublish": false,
+    "rooms": 3,
+    "meters": "140 m²",
+    "bathrooms": 2,
+    "parking": 2
+  },
+  {
+    "title": "Las Condes, Mariano Sánchez Fontecilla 1180",
+    "price": "$ 850.000",
+    "newPublish": false,
+    "rooms": 2,
+    "meters": "75 m²",
+    "bathrooms": 2,
+    "parking": 1
+  },
+  {
+    "title": "Las Condes, Torres de Av. Francisco Bilbao",
+    "price": "UF 27",
+    "newPublish": false,
+    "rooms": 3,
+    "meters": "120 m²",
+    "bathrooms": 2,
+    "parking": 1
+  },
+  {
+    "title": "Las Condes, Neveria 4600",
+    "price": "$ 690.000",
+    "newPublish": false,
+    "rooms": 1,
+    "meters": "67 m²",
+    "bathrooms": 1,
+    "parking": 1
+  },
+  {
+    "title": "Las Condes, Jorge vi /metro manquehue",
+    "price": "$ 895.000",
+    "newPublish": false,
+    "rooms": 3,
+    "meters": "95 m²",
+    "bathrooms": 3,
+    "parking": 1
+  },
+  {
+    "title": "Las Condes, Cantagallo",
+    "price": "$ 820.000",
+    "newPublish": false,
+    "rooms": 1,
+    "meters": "50 m²",
+    "bathrooms": 1,
+    "parking": 0
+  },
+  {
+    "title": "Las Condes, Camino San Francisco de Asis",
+    "price": "$ 980.000",
+    "newPublish": false,
+    "rooms": 1,
+    "meters": "45 m²",
+    "bathrooms": 0,
+    "parking": 1
+  },
+  {
+    "title": "Las Condes, Fray Luis de León",
+    "price": "UF 120",
+    "newPublish": false,
+    "rooms": 4,
+    "meters": "340 m²",
+    "bathrooms": 3,
+    "parking": 3
+  },
+  {
+    "title": "Las Condes, Vespucio Latadia",
+    "price": "$ 800.000",
+    "newPublish": false,
+    "rooms": 2,
+    "meters": "",
+    "bathrooms": 2,
+    "parking": 1
+  },
+  {
+    "title": "Las Condes, Av. Manquehue Nte. 69 Publicación Reciente",
+    "price": "$ 520.000",
+    "newPublish": true,
+    "rooms": 1,
+    "meters": "45 m²",
+    "bathrooms": 1,
+    "parking": 1
+  }
+]
