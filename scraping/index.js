@@ -1,81 +1,60 @@
-import * as cheerio from 'cheerio'
-import * as dotenv from 'dotenv'
 import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { cleanText, MAIN_LIST_SELECTORS, scrape } from './utils.js'
 
-dotenv.config()
-
-async function scrape () {
-  const res = await fetch(`${process.env.URL}/las-condes/0`)
-  const html = await res.text()
-  return cheerio.load(html)
-}
+let pagination = 0
+const apartments = []
 
 async function getPublicationList () {
-  const $ = await scrape()
-  const $apartmentList = $('.clp-publication-list .clp-publication-element .clp-publication-element-description-container')
+  const $ = await scrape(pagination)
+  const $apartmentList = $('.clp-publication-list .clp-publication-element')
 
-  const cleanText = (text) => text
-    .replace(/\t|\n|\s:/g, '')
-    .replace(/\s\s+/g, ' ')
-    .replace(/.*:/g, ' ')
-    .trim()
-
-  const MAIN_LIST_SELECTORS = {
-    title: {
-      selector: '.publication-title-list',
-      typeOf: 'string'
-    },
-    price: {
-      selector: '.clp-big-value',
-      typeOf: 'string'
-    },
-    newPublish: {
-      selector: '.badge',
-      typeOf: 'boolean'
-    },
-    rooms: {
-      selector: '.clp-publication-features-container [title="Habitaciones"]',
-      typeOf: 'number'
-    },
-    meters: {
-      selector: '.clp-publication-features-container [title="Superficie Total"]',
-      typeOf: 'string'
-    },
-    bathrooms: {
-      selector: '.clp-publication-features-container [title="Baños"]',
-      typeOf: 'number'
-    },
-    parking: {
-      selector: '.clp-publication-features-container [title="Estacionamientos"]',
-      typeOf: 'number'
-    }
+  if (!$apartmentList || $apartmentList.length === 0) {
+    return []
   }
 
   const listSelectorEntries = Object.entries(MAIN_LIST_SELECTORS)
 
-  const apartments = []
-
-  $apartmentList.each((i, el) => {
-    const apartmentListEntries = listSelectorEntries.map(([key, { selector, typeOf }]) => {
-      const rawValue = $(el).find(selector).text()
+  $apartmentList.each((_, el) => {
+    const apartmentListEntries = listSelectorEntries.map(([key, { selector, selectorType, typeOf }]) => {
+      const rawValue = selectorType === 'attr'
+        ? $(el).find(selector).attr('href')
+        : $(el).find(selector).text()
       const parseValue = cleanText(rawValue)
       const value = typeOf === 'number'
         ? Number(parseValue)
         : typeOf === 'boolean'
           ? Boolean(parseValue)
           : parseValue
+
       return [key, value]
     })
 
-    apartments.push(Object.fromEntries(apartmentListEntries))
+    const { price, title, ...restData } = Object.fromEntries(apartmentListEntries)
+    const [currency, _price] = price.split(' ')
+
+    apartments.push({
+      ...restData,
+      price: _price,
+      currency,
+      title: title.replace(' Publicación Reciente', '')
+    })
   })
 
   return apartments
 }
 
-const apartments = await getPublicationList()
+const interval = setInterval(async () => {
+  const _apartments = await getPublicationList()
 
-const filePath = path.join(process.cwd(), './db/apartments.json')
+  console.log({ '✅': pagination })
 
-await writeFile(filePath, JSON.stringify(apartments, null, 2), 'utf-8')
+  if (_apartments.length === 0) {
+    const filePath = path.join(process.cwd(), './db/apartments.json')
+    await writeFile(filePath, JSON.stringify(apartments, null, 2), 'utf-8')
+    clearInterval(interval)
+    return
+  }
+
+  pagination++
+}, 1000)
