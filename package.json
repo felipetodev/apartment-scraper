@@ -5,17 +5,22 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:api": "wrangler dev api/index.js",
+    "publish:api": "wrangler publish api/index.js",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
-    "dotenv": "16.0.3"
+    "dotenv": "16.0.3",
+    "hono": "2.7.1"
   },
   "devDependencies": {
-    "standard": "17.0.0"
+    "standard": "17.0.0",
+    "vitest": "0.26.3",
+    "wrangler": "2.6.2"
   },
   "eslintConfig": {
     "extends": "standard"
