@@ -1,12 +1,17 @@
-import { writeFile } from 'node:fs/promises'
-import path from 'node:path'
-import { cleanText, MAIN_LIST_SELECTORS, scrape } from './utils.js'
+import {
+  cleanText,
+  getTimestamp,
+  MAIN_LIST_SELECTORS,
+  scrape,
+  SCRAPING_AREAS,
+  writeDBFile
+} from './utils.js'
 
 let pagination = 0
 const apartments = []
 
-async function getPublicationList () {
-  const $ = await scrape(pagination)
+async function getPublicationList (_area, _pagination) {
+  const $ = await scrape(_area, _pagination)
   const $apartmentList = $('.clp-publication-list .clp-publication-element')
 
   if (!$apartmentList || $apartmentList.length === 0) {
@@ -30,11 +35,14 @@ async function getPublicationList () {
       return [key, value]
     })
 
-    const { price, title, ...restData } = Object.fromEntries(apartmentListEntries)
+    const { price, title, date, ...restData } = Object.fromEntries(apartmentListEntries)
     const [currency, _price] = price.split(' ')
+    const timestamp = getTimestamp(date)
 
     apartments.push({
       ...restData,
+      date,
+      timestamp,
       price: _price,
       currency,
       title: title.replace(' Publicación Reciente', '')
@@ -44,17 +52,35 @@ async function getPublicationList () {
   return apartments
 }
 
-const interval = setInterval(async () => {
-  const _apartments = await getPublicationList()
+async function scrapeAndSave (area) {
+  return new Promise((resolve) => {
+    console.log(`Scraping [${area}]...`)
+    const interval = setInterval(async () => {
+      const _apartments = await getPublicationList(area, pagination)
 
-  console.log({ '✅': pagination })
+      console.log({ '✅': pagination })
 
-  if (_apartments.length === 0) {
-    const filePath = path.join(process.cwd(), './db/apartments.json')
-    await writeFile(filePath, JSON.stringify(apartments, null, 2), 'utf-8')
-    clearInterval(interval)
-    return
-  }
+      if (_apartments.length === 0) {
+        pagination = 0
+        console.log(`[${area}] scraped successfully`)
+        console.log(`Writing [${area}] to database...`)
+        await writeDBFile(apartments)
+        console.log(`[${area}] written successfully`)
+        clearInterval(interval)
+        resolve()
+        return
+      }
+      pagination++
+    }, 1000)
+  })
+}
 
-  pagination++
-}, 1000)
+for (const area of SCRAPING_AREAS) {
+  const start = performance.now()
+
+  await scrapeAndSave(area)
+
+  const end = performance.now()
+  const time = (end - start) / 1000
+  console.log(`[${area}] scraped in ${time} seconds`)
+}
