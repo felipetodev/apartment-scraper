@@ -35,13 +35,16 @@ async function getPublicationList (_area, _pagination) {
       return [key, value]
     })
 
-    const { price, title, date, ...restData } = Object.fromEntries(apartmentListEntries)
+    const { price, link, title, date, ...restData } = Object.fromEntries(apartmentListEntries)
     const [currency, _price] = price.split(' ')
+    const { 3: slug } = link.split('/')
     const timestamp = getTimestamp(date)
 
     apartments.push({
       ...restData,
       date,
+      slug,
+      link,
       timestamp,
       price: _price,
       currency,
