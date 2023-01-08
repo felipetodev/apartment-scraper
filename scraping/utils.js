@@ -1,12 +1,19 @@
 import * as cheerio from 'cheerio'
 import * as dotenv from 'dotenv'
+import { writeFile } from 'node:fs/promises'
+import path from 'node:path'
 
 dotenv.config()
 
 export const config = {
-  url: process.env.URL,
-  area: 'las-condes'
+  url: process.env.URL
 }
+
+export const SCRAPING_AREAS = [
+  'las-condes',
+  'providencia',
+  'nunoa'
+]
 
 export const MAIN_LIST_SELECTORS = {
   title: {
@@ -54,8 +61,18 @@ export const cleanText = (text) => text
   .replace(/.*:/g, ' ')
   .trim()
 
-export async function scrape (pagination = 0) {
-  const res = await fetch(`${config.url}/${config.area}/${pagination}`)
+export async function scrape (area, pagination) {
+  const res = await fetch(`${config.url}/${area}/${pagination}`)
   const html = await res.text()
   return cheerio.load(html)
+}
+
+export function getTimestamp (date) {
+  const prefix = date.split('/').reverse().join('-')
+  return new Date(prefix).getTime()
+}
+
+export async function writeDBFile (data) {
+  const filePath = path.join(process.cwd(), './db/apartments.json')
+  return await writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8')
 }
