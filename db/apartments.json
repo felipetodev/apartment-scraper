@@ -238,7 +238,7 @@
     "title": "Las Condes, Noruega"
   },
   {
-    "newPublish": true,
+    "newPublish": false,
     "rooms": 3,
     "meters": "150 m²",
     "bathrooms": 2,
@@ -7350,7 +7350,7 @@
     "title": "Ñuñoa, Arriendo dpto a estreñar en ñuñoa 2d/1b/1e"
   },
   {
-    "newPublish": true,
+    "newPublish": false,
     "rooms": 2,
     "meters": "76 m²",
     "bathrooms": 2,
