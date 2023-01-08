@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "scrape": "node --no-warnings scraping/index.js",
     "dev:api": "wrangler dev api/index.js",
     "publish:api": "wrangler publish api/index.js",
     "test": "vitest"
@@ -18,6 +19,7 @@
     "hono": "2.7.1"
   },
   "devDependencies": {
+    "picocolors": "1.0.0",
     "standard": "17.0.0",
     "vitest": "0.26.3",
     "wrangler": "2.6.2"
