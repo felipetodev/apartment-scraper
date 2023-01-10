@@ -1,13 +1,16 @@
 import { Hono } from 'hono'
 import apartments from '../db/apartments.json'
-import { SCRAPING_AREAS } from '../scraping/utils.js'
 
 const app = new Hono()
 
 app.get('/', (ctx) => {
   return ctx.json([
     {
-      area: SCRAPING_AREAS,
+      area: [
+        'las-condes',
+        'providencia',
+        'nunoa'
+      ],
       description: 'Slugs available for scraping specific apartment by area'
     },
     {
