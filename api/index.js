@@ -11,6 +11,7 @@ app.get('/', (ctx) => {
         'providencia',
         'nunoa'
       ],
+      endpoint: '',
       description: 'Slugs available for scraping specific apartment by area'
     },
     {
