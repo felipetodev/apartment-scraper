@@ -20,7 +20,7 @@ export const MAIN_LIST_SELECTORS = {
     selector: '.publication-title-list',
     typeOf: 'string'
   },
-  link: {
+  url: {
     selectorType: 'attr',
     selector: '.publication-title-list a',
     typeOf: 'string'
