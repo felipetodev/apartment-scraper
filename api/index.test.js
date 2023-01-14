@@ -1,6 +1,6 @@
 import { unstable_dev as unstableDev } from 'wrangler'
 import { describe, expect, it, beforeAll, afterAll } from 'vitest'
-import { SCRAPING_AREAS } from '../scraping/utils'
+import { SCRAPING_AREAS } from '../scraping/utils.js'
 
 async function setup () {
   return await unstableDev(
@@ -45,7 +45,16 @@ describe('Testing "/" route', () => {
     apiRoutes.forEach(endpoint => checkProperties(endpoint, apiRoutesProperties))
   })
 
-  it('Route /apartments/:area should return all its properties specific apartments by area', async () => {
+  it('Route /apartments/:area should return all apartments by scraping areas availables', async () => {
+    SCRAPING_AREAS.forEach(async (area) => {
+      const resp = await worker.fetch(`/apartments/${area}`)
+      expect(resp.status).toBe(200)
+      const apartments = await resp.json()
+      apartments.forEach(apartment => expect(apartment.slug).toContain(area))
+    })
+  })
+
+  it('Route /apartments/:area available should return all its properties', async () => {
     const resp = await worker.fetch('/apartments/las-condes')
     expect(resp.status).toBe(200)
 
@@ -57,7 +66,7 @@ describe('Testing "/" route', () => {
       { name: 'parking', type: 'number' },
       { name: 'date', type: 'string' },
       { name: 'slug', type: 'string' },
-      { name: 'link', type: 'string' },
+      { name: 'url', type: 'string' },
       { name: 'timestamp', type: 'number' },
       { name: 'price', type: 'string' },
       { name: 'currency', type: 'string' },
@@ -68,18 +77,7 @@ describe('Testing "/" route', () => {
     apartments.forEach(apartment => checkProperties(apartment, apartmentsProperties))
   })
 
-  it('Route /apartments/providencia should return all apartments by area "provicendia"', async () => {
-    const areasAvailables = SCRAPING_AREAS
-
-    areasAvailables.forEach(async (area) => {
-      const resp = await worker.fetch(`/apartments/${area}`)
-      expect(resp.status).toBe(200)
-      const apartments = await resp.json()
-      apartments.forEach(apartment => expect(apartment.slug).toContain(area))
-    })
-  })
-
-  it('Route /apartments/not-found should return 404', async () => {
+  it('Route /apartments/not-found should return 404 & error message', async () => {
     let resp = await worker.fetch('/apartments/not-found')
     expect(resp.status).toBe(404)
     resp = await resp.json()
