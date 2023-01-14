@@ -4,7 +4,7 @@ Info scraped from **[chilepropiedades.cl](https://chilepropiedades.cl/)** and up
 
 ## API
 
-Dirección: https://apartment-scraper.felipetodev.workers.dev/
+https://apartment-scraper.felipetodev.workers.dev/
 
 Endpoints availables:
 
